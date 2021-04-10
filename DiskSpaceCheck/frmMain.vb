@@ -15,7 +15,7 @@ Public Class frmMain
         ProgressBar1.Minimum = 0
         ProgressBar1.Maximum = 100
         grdCheckDiskSpace.Rows.Clear()
-        If ComboBox1.Text = "ESTE SERVERS" Then
+        If ComboBox1.Text = "ESTE SERVERs" Then
             ProgressBar1.Value = 20
             getDFFromESTEServersSSH()
             fillGrid()
@@ -605,7 +605,7 @@ Public Class frmMain
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         'Dim conInt As Object
-        ComboBox1.Text = "ESTE SERVERs"
+        ComboBox1.Text = "ESTE SERVERS yuhhuuu"
         ProgressBar1.Visible = False
         formatGrid()
 

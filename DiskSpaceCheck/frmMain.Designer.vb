@@ -82,7 +82,6 @@ Partial Class frmMain
         'ComboBox1
         '
         Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Items.AddRange(New Object() {"ESTE SERVERs", "FTP SERVERs"})
         Me.ComboBox1.Location = New System.Drawing.Point(200, 15)
         Me.ComboBox1.Name = "ComboBox1"
         Me.ComboBox1.Size = New System.Drawing.Size(272, 21)
@@ -186,7 +185,7 @@ Partial Class frmMain
         Me.ProgressBar1.Size = New System.Drawing.Size(604, 13)
         Me.ProgressBar1.TabIndex = 43
         '
-        'Form1
+        'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -196,7 +195,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.okBtn)
         Me.Controls.Add(Me.cancelBtn)
-        Me.Name = "Form1"
+        Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Disk Space Check"
         Me.GroupBox1.ResumeLayout(False)
