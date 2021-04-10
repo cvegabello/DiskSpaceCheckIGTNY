@@ -15,7 +15,7 @@ Public Class frmMain
         ProgressBar1.Minimum = 0
         ProgressBar1.Maximum = 100
         grdCheckDiskSpace.Rows.Clear()
-        If ComboBox1.Text = "ESTE SERVERs" Then
+        If ComboBox1.Text = "ESTE SERVERS" Then
             ProgressBar1.Value = 20
             getDFFromESTEServersSSH()
             fillGrid()
@@ -26,6 +26,7 @@ Public Class frmMain
                     valueInt = dgc.Value
                     If valueInt > 80 Then
                         dgc.Style.ForeColor = Color.Red
+
                     End If
                     'dgc.Style.BackColor = Color.Red
                 Next
