@@ -26,7 +26,6 @@ Public Class frmMain
                     valueInt = dgc.Value
                     If valueInt > 80 Then
                         dgc.Style.ForeColor = Color.Red
-
                     End If
                     'dgc.Style.BackColor = Color.Red
                 Next
@@ -605,7 +604,7 @@ Public Class frmMain
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         'Dim conInt As Object
-        ComboBox1.Text = "ESTE SERVERS yuhhuuu"
+        ComboBox1.Text = "ESTE SERVERs"
         ProgressBar1.Visible = False
         formatGrid()
 
