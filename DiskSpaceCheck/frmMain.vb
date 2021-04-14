@@ -398,96 +398,109 @@ Public Class frmMain
 
         Dim errCodeInt As Integer = 0
         Dim errMessageStr As String = ""
-        Dim listPercentageEste1 As New ArrayList
-        Dim listPercentageEste2 As New ArrayList
-        Dim listPercentageEste3 As New ArrayList
-        Dim listPercentageEste4 As New ArrayList
-        Dim listPercentageEste5 As New ArrayList
+        Dim listPercentage As New ArrayList
 
+        Dim newListPercentageESTE1 As New ArrayList
+        Dim newListPercentageESTE2 As New ArrayList
+        Dim newListPercentageESTE3 As New ArrayList
+        Dim newListPercentageESTE4 As New ArrayList
+        Dim newListPercentageESTE5 As New ArrayList
 
         Dim listFolders As New ArrayList
         'Dim xlibro As Microsoft.Office.Interop.Excel.Application
-        Dim indexReturn, contInt As Integer
+        Dim indexReturn, contInt, myIndex As Integer
         Dim valueStr As String
         Dim pathToFindStr, timeStr As String
         Dim fecha As Date
-        Dim monthStr, dayStr, yearStr, hourStr, minStr, secStr, fileNameStr, strPathFile, strPathRemoteFile As String
+        Dim listMountedOnEste As New ArrayList
 
         Dim rowStr As String()
-        Dim substrings() As String
+
+        listMountedOnEste.Add("root")
+        listMountedOnEste.Add("audit")
+        listMountedOnEste.Add("bjf")
+        listMountedOnEste.Add("boot")
+        listMountedOnEste.Add("d2")
+        listMountedOnEste.Add("d3")
+        listMountedOnEste.Add("db2data1")
+        listMountedOnEste.Add("db2data2")
+        listMountedOnEste.Add("db2data3")
+        listMountedOnEste.Add("db2data4")
+        listMountedOnEste.Add("db2log")
+        listMountedOnEste.Add("db2temp")
+        listMountedOnEste.Add("dev/shm")
+        listMountedOnEste.Add("files")
+        listMountedOnEste.Add("home")
+        listMountedOnEste.Add("ipsfiles1")
+        listMountedOnEste.Add("ivallowtier")
+        listMountedOnEste.Add("log")
+        listMountedOnEste.Add("mjf")
+        listMountedOnEste.Add("oltp")
+        listMountedOnEste.Add("oltpfiles1")
+        listMountedOnEste.Add("oltpfiles2")
+        listMountedOnEste.Add("oltpfiles3")
+        listMountedOnEste.Add("oltpfiles4")
+        listMountedOnEste.Add("opt")
+        listMountedOnEste.Add("rptfiles1")
+        listMountedOnEste.Add("tmp")
+        listMountedOnEste.Add("usr")
+        listMountedOnEste.Add("var")
+
+
 
         fecha = Format(Now, "MM/dd/yyyy")
         timeStr = Format(Now, "HH:mm:ss")
 
 
-        readFileDF("DF_ESTE1.txt", listFolders, listPercentageEste1, errMessageStr)
+        readFileDF("DF_ESTE1.txt", listFolders, listPercentage, errMessageStr)
+
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            newListPercentageESTE1.Add(listPercentage(myIndex))
+        Next
         listFolders.Clear()
-        readFileDF("DF_ESTE2.txt", listFolders, listPercentageEste2, errMessageStr)
+        listPercentage.clear()
+
+        readFileDF("DF_ESTE2.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            newListPercentageESTE2.Add(listPercentage(myIndex))
+        Next
         listFolders.Clear()
-        readFileDF("DF_ESTE3.txt", listFolders, listPercentageEste3, errMessageStr)
+        listPercentage.Clear()
+
+        readFileDF("DF_ESTE3.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            newListPercentageESTE3.Add(listPercentage(myIndex))
+        Next
         listFolders.Clear()
-        readFileDF("DF_ESTE4.txt", listFolders, listPercentageEste4, errMessageStr)
+        listPercentage.Clear()
+
+        readFileDF("DF_ESTE4.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            newListPercentageESTE4.Add(listPercentage(myIndex))
+        Next
         listFolders.Clear()
-        readFileDF("DF_ESTE5.txt", listFolders, listPercentageEste5, errMessageStr)
+        listPercentage.Clear()
+
+        readFileDF("DF_ESTE5.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            newListPercentageESTE5.Add(listPercentage(myIndex))
+        Next
+        listFolders.Clear()
+        listPercentage.Clear()
 
 
-        contInt = listFolders.Count
+        contInt = 29
         For i = 0 To contInt - 1
-            rowStr = New String() {listFolders.Item(i), listPercentageEste1.Item(i), listPercentageEste2.Item(i), listPercentageEste3.Item(i), listPercentageEste4.Item(i), listPercentageEste5.Item(i)}
+            rowStr = New String() {listMountedOnEste.Item(i), newListPercentageESTE1.Item(i), newListPercentageESTE2.Item(i), newListPercentageESTE3.Item(i), newListPercentageESTE4.Item(i), newListPercentageESTE5.Item(i)}
             grdCheckDiskSpace.Rows.Add(rowStr)
         Next
-        'listFolders.Clear()
-        'listPercentage.Clear()
 
-        'readFileDF("DF_ESTE2.txt", listFolders, listPercentage, errMessageStr)
-
-        'For i = 6 To 35
-        '    pathToFindStr = xlibro.Cells(i, 1).Value
-        '    indexReturn = listFolders.IndexOf(pathToFindStr)
-        '    valueStr = listPercentage.Item(indexReturn)
-        '    xlibro.Cells(i, 3) = valueStr
-
-        'Next
-
-        'listFolders.Clear()
-        'listPercentage.Clear()
-
-        'readFileDF("DF_ESTE3.txt", listFolders, listPercentage, errMessageStr)
-
-        'For i = 6 To 35
-        '    pathToFindStr = xlibro.Cells(i, 1).Value
-        '    indexReturn = listFolders.IndexOf(pathToFindStr)
-        '    valueStr = listPercentage.Item(indexReturn)
-        '    xlibro.Cells(i, 4) = valueStr
-
-        'Next
-
-        'listFolders.Clear()
-        'listPercentage.Clear()
-
-        'readFileDF("DF_ESTE4.txt", listFolders, listPercentage, errMessageStr)
-        'For i = 6 To 35
-        '    pathToFindStr = xlibro.Cells(i, 1).Value
-        '    indexReturn = listFolders.IndexOf(pathToFindStr)
-        '    valueStr = listPercentage.Item(indexReturn)
-        '    xlibro.Cells(i, 5) = valueStr
-
-        'Next
-
-        'listFolders.Clear()
-        'listPercentage.Clear()
-
-        'readFileDF("DF_ESTE5.txt", listFolders, listPercentage, errMessageStr)
-
-        'For i = 6 To 35
-        '    pathToFindStr = xlibro.Cells(i, 1).Value
-        '    indexReturn = listFolders.IndexOf(pathToFindStr)
-        '    valueStr = listPercentage.Item(indexReturn)
-        '    xlibro.Cells(i, 6) = valueStr
-        'Next
-
-        'listFolders.Clear()
-        'listPercentage.Clear()
+       
 
     End Sub
 
@@ -547,13 +560,7 @@ Public Class frmMain
         Column2.Width = 100
 
 
-        'Size
-        '
-        'DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        'DataGridViewCellStyle2.BackColor = Color.DarkKhaki
-        'DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        'DataGridViewCellStyle2.ForeColor = Drawing.Color.Maroon
-        'DataGridViewCellStyle2.Format = "#,##0"
+       
         Column3.DefaultCellStyle = DataGridViewCellStyle2
         Column3.HeaderText = "NYESTE2"
         Column3.Resizable = DataGridViewTriState.[True]
@@ -569,8 +576,7 @@ Public Class frmMain
 
 
 
-        ''Exist Yes or No
-        ''
+       
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle3.BackColor = Color.DarkKhaki
         DataGridViewCellStyle3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
