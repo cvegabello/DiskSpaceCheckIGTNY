@@ -31,6 +31,8 @@ Public Class frmMain
                         End If
                     Next
                 Next
+                Label3.Visible = True
+                Label3.Text = Format(Now, "MM/dd/yyyy HH:mm:ss")
             Case "PORTAL PDC"
                 grdDFPortalPDC.Rows.Clear()
                 ProgressBar1.Value = 20
@@ -50,9 +52,35 @@ Public Class frmMain
                         End If
                     Next
                 Next
+                Label2.Visible = True
+                Label2.Text = Format(Now, "MM/dd/yyyy HH:mm:ss")
+
+            Case "SFTP - DMZSFTP"
+                grdDFSftp.Rows.Clear()
+                ProgressBar1.Value = 20
+                getDFFromSFTPServersSSH()
+                fillGridSFTP()
+                ProgressBar1.Value = 95
+                For j = 1 To 4
+                    For i = 0 To grdDFSftp.Rows.Count - 1
+                        dgc = grdDFSftp.Rows(i).Cells(j)
+                        Try
+                            valueInt = dgc.Value
+                        Catch ex As InvalidCastException
+                            Continue For
+                        End Try
+                        If valueInt > 80 Then
+                            dgc.Style.ForeColor = Color.Red
+                        End If
+                    Next
+                Next
+                Label1.Visible = True
+                Label1.Text = Format(Now, "MM/dd/yyyy HH:mm:ss")
+
         End Select
         ProgressBar1.Value = 100
         ProgressBar1.Visible = False
+
 
     End Sub
     Private Sub cancelBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cancelBtn.Click
@@ -193,6 +221,106 @@ Public Class frmMain
 
     End Function
 
+
+
+    Private Sub getDFFromSFTPServersSSH()
+
+        Dim errCodeInt As Integer = 0
+        Dim resCode As Integer = 0
+        Dim errMessageStr As String = ""
+        Dim file As System.IO.StreamWriter
+        Dim infoStr As String
+        Dim listPercentage As New ArrayList
+        Dim listFolders As New ArrayList
+        Dim fecha As Date
+        Dim monthStr, dayStr, yearStr, hourStr, minStr, secStr, fileLogNameStr As String
+        Dim flagError = False
+
+
+        fecha = Format(Now, "MM/dd/yyyy HH:mm:ss")
+        monthStr = CStr(fecha.Month).PadLeft(2, "0")
+        dayStr = CStr(fecha.Day).PadLeft(2, "0")
+        yearStr = CStr(fecha.Year).PadLeft(4, "0")
+        hourStr = CStr(fecha.Hour).PadLeft(2, "0")
+        minStr = CStr(fecha.Minute).PadLeft(2, "0")
+        secStr = CStr(fecha.Second).PadLeft(2, "0")
+        fileLogNameStr = "logError_" & monthStr & dayStr & yearStr & ".txt"
+
+
+        infoStr = getDFFromSSH("10.1.5.182", "ricie", "@m3t5", errCodeInt, errMessageStr)
+        If errCodeInt <> 0 Then
+            Select Case errCodeInt
+                Case -1 'Error related to component license
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
+                    MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
+                    Me.Dispose()
+
+                Case Else '-2, -3, -4, -5, -6, -7, -8, -9
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine("NYSFTP1: " & errMessageStr)
+                    file.Close()
+                    flagError = True
+            End Select
+        End If
+        file = My.Computer.FileSystem.OpenTextFileWriter("NYSFTP1.txt", False)
+        file.WriteLine(infoStr)
+        file.Close()
+
+        ProgressBar1.Value = 40
+
+
+        
+        infoStr = getDFFromSSH("10.2.5.183", "ricie", "@m3t5", errCodeInt, errMessageStr)
+        If errCodeInt <> 0 Then
+            Select Case errCodeInt
+                Case -1 'Error related to component license
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
+                    MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
+                    Me.Dispose()
+
+                Case Else '-2, -3, -4, -5, -6, -7, -8, -9
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine("NYSFTP2: " & errMessageStr)
+                    file.Close()
+                    flagError = True
+            End Select
+        End If
+        file = My.Computer.FileSystem.OpenTextFileWriter("NYSFTP2.txt", False)
+        file.WriteLine(infoStr)
+        file.Close()
+        ProgressBar1.Value = 70
+
+        
+        infoStr = getDFFromSSH("10.1.6.184", "ricie", "@m3t5", errCodeInt, errMessageStr)
+        If errCodeInt <> 0 Then
+            Select Case errCodeInt
+                Case -1 'Error related to component license
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
+                    MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
+                    Me.Dispose()
+
+                Case Else '-2, -3, -4, -5, -6, -7, -8, -9
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine("NYDMZSFTP1: " & errMessageStr)
+                    file.Close()
+                    flagError = True
+            End Select
+        End If
+        file = My.Computer.FileSystem.OpenTextFileWriter("NYDMZSFTP1.txt", False)
+        file.WriteLine(infoStr)
+        file.Close()
+
+        ProgressBar1.Value = 90
+
+    End Sub
+
+
     Private Sub getDFFromPortalPDCServersSSH()
 
         Dim errCodeInt As Integer = 0
@@ -220,16 +348,16 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
                 Case Else '-2, -3, -4, -5, -6, -7, -8, -9
                     file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine("B2BAPP1: " & errMessageStr)
-                    File.Close()
+                    file.WriteLine("B2BAPP1: " & errMessageStr)
+                    file.Close()
                     flagError = True
 
             End Select
@@ -258,7 +386,7 @@ Public Class frmMain
             End Select
         End If
         file = My.Computer.FileSystem.OpenTextFileWriter("DF_B2BAPP2.txt", False)
-        File.WriteLine(infoStr)
+        file.WriteLine(infoStr)
         file.Close()
         ProgressBar1.Value = 45
 
@@ -267,9 +395,9 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
@@ -281,8 +409,8 @@ Public Class frmMain
             End Select
         End If
         file = My.Computer.FileSystem.OpenTextFileWriter("DF_B2BWEB1.txt", False)
-        File.WriteLine(infoStr)
-        File.Close()
+        file.WriteLine(infoStr)
+        file.Close()
         ProgressBar1.Value = 55
 
 
@@ -290,22 +418,22 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
                 Case Else '-2, -3, -4, -5, -6, -7, -8, -9
                     file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine("B2BWEB2: " & errMessageStr)
-                    File.Close()
+                    file.WriteLine("B2BWEB2: " & errMessageStr)
+                    file.Close()
                     flagError = True
             End Select
         End If
         file = My.Computer.FileSystem.OpenTextFileWriter("DF_B2BWEB2.txt", False)
-        File.WriteLine(infoStr)
-        File.Close()
+        file.WriteLine(infoStr)
+        file.Close()
         ProgressBar1.Value = 60
 
 
@@ -313,9 +441,9 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
@@ -336,9 +464,9 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
@@ -351,8 +479,8 @@ Public Class frmMain
             End Select
         End If
         file = My.Computer.FileSystem.OpenTextFileWriter("DF_PWA2.txt", False)
-        File.WriteLine(infoStr)
-        File.Close()
+        file.WriteLine(infoStr)
+        file.Close()
         ProgressBar1.Value = 70
 
 
@@ -378,7 +506,7 @@ Public Class frmMain
         file.Close()
         ProgressBar1.Value = 75
 
-        
+
         infoStr = getDFFromSSH("10.1.5.167", "ricie", "@m3t5", errCodeInt, errMessageStr)
         If errCodeInt <> 0 Then
             Select Case errCodeInt
@@ -400,14 +528,14 @@ Public Class frmMain
         file.WriteLine(infoStr)
         file.Close()
         ProgressBar1.Value = 80
-        
+
         infoStr = getDFFromSSH("10.1.218.170", "ricie", "@m3t5", errCodeInt, errMessageStr)
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
@@ -427,9 +555,9 @@ Public Class frmMain
         If errCodeInt <> 0 Then
             Select Case errCodeInt
                 Case -1 'Error related to component license
-                    File = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
-                    File.WriteLine(errMessageStr)
-                    File.Close()
+                    file = My.Computer.FileSystem.OpenTextFileWriter(fileLogNameStr, True)
+                    file.WriteLine(errMessageStr)
+                    file.Close()
                     MsgBox("ChilkatDotNet has expired", MsgBoxStyle.Information, AcceptButton)
                     Me.Dispose()
 
@@ -446,8 +574,6 @@ Public Class frmMain
         ProgressBar1.Value = 90
 
     End Sub
-
-
 
     Private Sub getDFFromESTEServersSSH()
 
@@ -651,6 +777,103 @@ Public Class frmMain
             MsgBox("", MsgBoxStyle.Information, "Error")
         End Try
     End Sub
+
+
+
+    Private Sub fillGridSFTP()
+
+        Dim errCodeInt As Integer = 0
+        Dim errMessageStr As String = ""
+        Dim listPercentage As New ArrayList
+
+        Dim newListPercentageSftp1 As New ArrayList
+        Dim newListPercentageSftp2 As New ArrayList
+        Dim newListPercentageDMZSftp1 As New ArrayList
+        Dim newListPercentageDMZSftp2 As New ArrayList
+
+        Dim listFolders As New ArrayList
+        Dim indexReturn, contInt, myIndex As Integer
+        Dim valueStr As String
+        Dim pathToFindStr, timeStr As String
+        Dim fecha As Date
+        Dim listMountedOnEste As New ArrayList
+
+        Dim rowStr As String()
+
+        listMountedOnEste.Add("root")
+        listMountedOnEste.Add("boot")
+        listMountedOnEste.Add("dev/shm")
+        listMountedOnEste.Add("home")
+        listMountedOnEste.Add("opt")
+        listMountedOnEste.Add("tmp")
+        listMountedOnEste.Add("usr")
+        listMountedOnEste.Add("var")
+
+
+        fecha = Format(Now, "MM/dd/yyyy")
+        timeStr = Format(Now, "HH:mm:ss")
+
+
+        readFileDF("NYSFTP1.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            Try
+                newListPercentageSftp1.Add(listPercentage(myIndex))
+            Catch ex As ArgumentOutOfRangeException
+                newListPercentageSftp1.Add(" ")
+            End Try
+
+        Next
+        listFolders.Clear()
+        listPercentage.Clear()
+
+        readFileDF("NYSFTP2.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            Try
+                newListPercentageSftp2.Add(listPercentage(myIndex))
+            Catch ex As ArgumentOutOfRangeException
+                newListPercentageSftp2.Add(" ")
+            End Try
+        Next
+        listFolders.Clear()
+        listPercentage.Clear()
+
+        readFileDF("NYDMZSFTP1.txt", listFolders, listPercentage, errMessageStr)
+        For Each element In listMountedOnEste
+            myIndex = listFolders.IndexOf(element)
+            Try
+                newListPercentageDMZSftp1.Add(listPercentage(myIndex))
+            Catch ex As ArgumentOutOfRangeException
+                newListPercentageDMZSftp1.Add(" ")
+            End Try
+        Next
+        listFolders.Clear()
+        listPercentage.Clear()
+
+
+        'readFileDF("NYDMZSFTP2.txt", listFolders, listPercentage, errMessageStr)
+        'For Each element In listMountedOnEste
+        '    myIndex = listFolders.IndexOf(element)
+        '    Try
+        '        newListPercentageDMZSftp2.Add(listPercentage(myIndex))
+        '    Catch ex As ArgumentOutOfRangeException
+        '        newListPercentageDMZSftp2.Add(" ")
+        '    End Try
+        'Next
+        'listFolders.Clear()
+        'listPercentage.Clear()
+
+
+        contInt = 8
+        For i = 0 To contInt - 1
+            rowStr = New String() {listMountedOnEste.Item(i), newListPercentageSftp1.Item(i), newListPercentageSftp2.Item(i), newListPercentageDMZSftp1.Item(i)}
+            grdDFSftp.Rows.Add(rowStr)
+        Next
+
+    End Sub
+
+
 
     Private Sub fillGridPortalPDC()
 
@@ -935,11 +1158,88 @@ Public Class frmMain
             grdCheckDiskSpace.Rows.Add(rowStr)
         Next
 
-       
+
 
     End Sub
 
-    
+
+    Private Sub formatGridSftp()
+
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle
+        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle
+
+        Dim Column1 As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn
+        Dim Column2 As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn
+        Dim Column3 As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn
+        Dim Column4 As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn
+        Dim Column5 As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn
+        
+
+
+        Column1 = grdDFSftp.Columns(0)
+        Column2 = grdDFSftp.Columns(1)
+        Column3 = grdDFSftp.Columns(2)
+        Column4 = grdDFSftp.Columns(3)
+        Column5 = grdDFSftp.Columns(4)
+        
+
+
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = Color.DarkKhaki
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = Drawing.Color.Black
+        DataGridViewCellStyle1.SelectionBackColor = Color.DarkKhaki
+        DataGridViewCellStyle1.SelectionForeColor = Drawing.Color.Black
+
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.BackColor = Color.DarkKhaki
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = Drawing.Color.Black
+        DataGridViewCellStyle2.SelectionBackColor = Color.DarkKhaki
+        DataGridViewCellStyle2.SelectionForeColor = Drawing.Color.Black
+
+        Column1.DefaultCellStyle = DataGridViewCellStyle1
+        Column1.HeaderText = "      "
+        Column1.Resizable = DataGridViewTriState.[True]
+        Column1.SortMode = DataGridViewColumnSortMode.NotSortable
+        Column1.Width = 100
+
+        Column2.DefaultCellStyle = DataGridViewCellStyle2
+        Column2.HeaderText = "NYSFTP1"
+        Column2.Resizable = DataGridViewTriState.[True]
+        Column2.SortMode = DataGridViewColumnSortMode.NotSortable
+        Column2.Width = 100
+
+
+        Column3.DefaultCellStyle = DataGridViewCellStyle2
+        Column3.HeaderText = "NYSFTP2"
+        Column3.Resizable = DataGridViewTriState.[True]
+        Column3.SortMode = DataGridViewColumnSortMode.NotSortable
+        Column3.Width = 100
+
+
+        Column4.DefaultCellStyle = DataGridViewCellStyle2
+        Column4.HeaderText = "NYDMZSFTP1"
+        Column4.Resizable = DataGridViewTriState.[True]
+        Column4.SortMode = DataGridViewColumnSortMode.NotSortable
+        Column4.Width = 140
+
+
+        Column5.DefaultCellStyle = DataGridViewCellStyle2
+        Column5.HeaderText = "NYDMZSFTP2"
+        Column5.Resizable = DataGridViewTriState.[True]
+        Column5.SortMode = DataGridViewColumnSortMode.NotSortable
+        Column5.Width = 140
+
+
+        
+
+
+
+
+    End Sub
+
+
 
     Private Sub formatGridPortalPDC()
 
@@ -1138,14 +1438,14 @@ Public Class frmMain
         Column5.SortMode = DataGridViewColumnSortMode.NotSortable
         Column5.Width = 100
 
-        
+
         Column6.DefaultCellStyle = DataGridViewCellStyle2
         Column6.HeaderText = "NYESTE5"
         Column6.Resizable = DataGridViewTriState.[True]
         Column6.SortMode = DataGridViewColumnSortMode.NotSortable
         Column6.Width = 100
 
-        
+
 
 
     End Sub
@@ -1158,43 +1458,65 @@ Public Class frmMain
 
         TabControl1.SelectedIndex = 0
         'tabSelectedText = TabControl1.SelectedTab.Text
+        Label1.Visible = False
+        Label2.Visible = False
+        Label3.Visible = False
         positionEste()
         ProgressBar1.Visible = False
         formatGrid()
         formatGridPortalPDC()
+        formatGridSftp()
 
+    End Sub
+
+    Private Sub positionSFTP()
+
+        'grdDFPortalPDC.Visible = True
+        'grdCheckDiskSpace.Visible = False
+        ProgressBar1.Location = New Point(30, 340)
+        ProgressBar1.Width = 580
+        ProgressBar1.Height = 13
+        okBtn.Location = New Point(320, 360)
+        cancelBtn.Location = New Point(468, 360)
+        Me.Location = New Point(610, 270)
+        Me.Width = 650
+        Me.Height = 470
+        TabControl1.Width = 610
+        TabControl1.Height = 320
+        grdDFSftp.Location = New Point(10, 10)
     End Sub
 
 
     Private Sub positionPortalPDC()
 
-        grdDFPortalPDC.Visible = True
-        grdCheckDiskSpace.Visible = False
-        ProgressBar1.Location = New Point(43, 373)
+        'grdDFPortalPDC.Visible = True
+        'grdCheckDiskSpace.Visible = False
+        ProgressBar1.Location = New Point(43, 400)
         ProgressBar1.Width = 1104
         ProgressBar1.Height = 13
-        okBtn.Location = New Point(785, 390)
-        cancelBtn.Location = New Point(943, 390)
+        okBtn.Location = New Point(785, 430)
+        cancelBtn.Location = New Point(943, 430)
         Me.Location = New Point(350, 270)
         Me.Width = 1199
-        Me.Height = 500
+        Me.Height = 530
         TabControl1.Width = 1149
-        TabControl1.Height = 355
+        TabControl1.Height = 380
+        grdDFPortalPDC.Location = New Point(20, 10)
     End Sub
 
     Private Sub positionEste()
-        grdCheckDiskSpace.Visible = True
-        grdDFPortalPDC.Visible = False
-        ProgressBar1.Location = New Point(43, 849)
+        'grdCheckDiskSpace.Visible = True
+        'grdDFPortalPDC.Visible = False
+        ProgressBar1.Location = New Point(43, 865)
         ProgressBar1.Width = 604
         ProgressBar1.Height = 13
-        okBtn.Location = New Point(393, 882)
-        cancelBtn.Location = New Point(532, 882)
-        Me.Location = New Point(650, 35)
+        okBtn.Location = New Point(393, 892)
+        cancelBtn.Location = New Point(532, 892)
+        Me.Location = New Point(650, 30)
         Me.Width = 715
-        Me.Height = 979
+        Me.Height = 990
         TabControl1.Width = 679
-        TabControl1.Height = 831
+        TabControl1.Height = 847
     End Sub
 
     Private Sub Initial()
@@ -1218,6 +1540,11 @@ Public Class frmMain
 
             Case "PORTAL PDC"
                 positionPortalPDC()
+
+            Case "SFTP - DMZSFTP"
+                positionSFTP()
+
+
         End Select
 
 
