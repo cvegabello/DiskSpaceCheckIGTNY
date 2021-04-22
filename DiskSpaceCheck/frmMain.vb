@@ -14,15 +14,10 @@ Public Class frmMain
         ProgressBar1.Visible = True
         ProgressBar1.Minimum = 0
         ProgressBar1.Maximum = 100
-        grdCheckDiskSpace.Rows.Clear()
-        grdDFPortalPDC.Rows.Clear()
 
-        Select Case ComboBox1.Text
-            Case "ESTE SERVERs"
-                'grdCheckDiskSpace.Visible = True
-                'grdDFPortalPDC.Visible = False
-                'Me.Refresh()
-                'positionEste()
+        Select Case TabControl1.SelectedTab.Text
+            Case "ESTE"
+                grdCheckDiskSpace.Rows.Clear()
                 ProgressBar1.Value = 20
                 getDFFromESTEServersSSH()
                 fillGrid()
@@ -37,10 +32,7 @@ Public Class frmMain
                     Next
                 Next
             Case "PORTAL PDC"
-                'grdDFPortalPDC.Visible = True
-                'grdCheckDiskSpace.Visible = False
-                'Me.Refresh()
-                'positionPortalPDC()
+                grdDFPortalPDC.Rows.Clear()
                 ProgressBar1.Value = 20
                 getDFFromPortalPDCServersSSH()
                 fillGridPortalPDC()
@@ -61,8 +53,6 @@ Public Class frmMain
         End Select
         ProgressBar1.Value = 100
         ProgressBar1.Visible = False
-
-
 
     End Sub
     Private Sub cancelBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cancelBtn.Click
@@ -1163,8 +1153,11 @@ Public Class frmMain
 
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        'Dim tabSelectedText As String
 
-        ComboBox1.Text = "ESTE SERVERs"
+
+        TabControl1.SelectedIndex = 0
+        'tabSelectedText = TabControl1.SelectedTab.Text
         positionEste()
         ProgressBar1.Visible = False
         formatGrid()
@@ -1177,8 +1170,6 @@ Public Class frmMain
 
         grdDFPortalPDC.Visible = True
         grdCheckDiskSpace.Visible = False
-        Me.Refresh()
-        GroupBox1.Location = New Point(284, 12)
         ProgressBar1.Location = New Point(43, 373)
         ProgressBar1.Width = 1104
         ProgressBar1.Height = 13
@@ -1187,13 +1178,13 @@ Public Class frmMain
         Me.Location = New Point(350, 270)
         Me.Width = 1199
         Me.Height = 500
+        TabControl1.Width = 1149
+        TabControl1.Height = 355
     End Sub
 
     Private Sub positionEste()
         grdCheckDiskSpace.Visible = True
         grdDFPortalPDC.Visible = False
-        Me.Refresh()
-        GroupBox1.Location = New Point(43, 12)
         ProgressBar1.Location = New Point(43, 849)
         ProgressBar1.Width = 604
         ProgressBar1.Height = 13
@@ -1202,13 +1193,11 @@ Public Class frmMain
         Me.Location = New Point(650, 35)
         Me.Width = 715
         Me.Height = 979
+        TabControl1.Width = 679
+        TabControl1.Height = 831
     End Sub
 
     Private Sub Initial()
-        GroupBox1.Location = New Point(50, 12)
-        'ProgressBar1.Location = New Point(43, 373)
-        'ProgressBar1.Width = 1104
-        'ProgressBar1.Height = 13
         okBtn.Location = New Point(200, 80)
         cancelBtn.Location = New Point(350, 80)
         Me.Location = New Point(550, 400)
@@ -1217,24 +1206,22 @@ Public Class frmMain
     End Sub
 
 
+    Private Sub TabControl1_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TabControl1.SelectedIndexChanged
 
-    
-    Private Sub ComboBox1_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBox1.SelectedIndexChanged
+        Dim nameStr As String
 
-        Select Case ComboBox1.Text
-            Case "ESTE SERVERs"
-                'grdCheckDiskSpace.Visible = True
-                'grdDFPortalPDC.Visible = False
-                'Me.Refresh()
+        nameStr = sender.selectedTab.name()
+
+        Select Case TabControl1.TabPages(nameStr).Text
+            Case "ESTE"
                 positionEste()
 
             Case "PORTAL PDC"
-                'grdDFPortalPDC.Visible = True
-                'grdCheckDiskSpace.Visible = False
-                'Me.Refresh()
                 positionPortalPDC()
         End Select
 
 
+
+        
     End Sub
 End Class
