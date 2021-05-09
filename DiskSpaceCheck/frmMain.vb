@@ -78,7 +78,7 @@ Public Class frmMain
                 Label1.Text = Format(Now, "MM/dd/yyyy HH:mm:ss")
 
         End Select
-        ProgressBar1.Value = 99
+        ProgressBar1.Value = 100
         ProgressBar1.Visible = False
 
 
